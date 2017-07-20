@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8">
+	<title>表格demo</title>
+	<link rel="stylesheet" type="text/css" href="css/jquery.dataTables.css">
+	<script type="text/javascript" charset="utf8" src="js/jquery.js"></script>
+    <script type="text/javascript" charset="utf8" src="config.js"></script>
+    <script type="text/javascript" charset="utf8" src="js/jquery.dataTables.js"></script>
+	<script type="text/javascript">
+$(document).ready(function() {
+   var obj = eval(mytable);
+   console.log(obj.Commonly.thdata);
+  var table_th='';
+   $.each(obj.Commonly.thdata,function(n,value){
+          table_th=table_th+"<th>"+value+"</th>";
+       })
+  $("body").append('<div id="'+obj.Commonly.ID+'" class="table"><h3>'+obj.Commonly.Title+'</h3><table class="display" cellspacing="0" width="100%"><thead><tr>'+table_th+'</tr></thead></table></div>'); 
+ 
+  var table = $('#'+obj.Commonly.ID+' table').DataTable( {
+		"ajax": "data/ajax.txt",//数据源
+		//"bPaginate": false,//分页按钮
+		"paging":   true,//分页按钮
+		"pagingType":   "simple_numbers",//分页模式  simple  simple_numbers full full_numbers 
+		"bFilter": true,//搜索栏
+		"search": "search:",//设置搜索栏前的显示信息
+		 //"scrollY": 200,//允许数据滚动，限制数据显示高度
+         "scrollCollapse": false,//滚动条
+		 "stateSave": false,//保存上次页面刷新
+		 "ordering": true, //排序
+		 "bLengthChange": true, //改变每页显示数据数量
+ 
+         "info":     true, //Showing 41 to 50 of 57 entries
+//水平滚动
+ "sScrollX": "100%",
+"sScrollXInner": "100%",
+"bScrollCollapse": false,
+//
+ "bDestory": true,
+  "bRetrieve": true,
+  "deferRender": false,//当数据量大时，不是一次性创建大量数据，而是根据每页所需创建数据，提高初始化速度。
+  "autoWidth": false,//控制自适应宽度
+  //"displayStart": 20,//初始化的时候从第20条数据开始显示
+  "jQueryUI": false,//控制jQuery UI 的主题支持的使用，需引入相关css文件
+  "lengthMenu": [10,200],//定义在每页显示记录数的select中显示的选项
+	"columnDefs": [
+	    { "orderable": false, "targets": 1 },//第二列禁止排序
+	    { "title": "ids", "targets": 0 },//设置第一列的标题
+	    { "width": "10%", "targets": 0 },//设置第一列的宽度度
+		{ "className": "mytext", "targets": 0 },//列加样式 
+	    { "cellType": "td", "targets": 0 },//设置列标签的类型（ex：th，td）
+		{ "contentPadding": "ddfsf", "targets": 0 },//设置填充内容，以计算与优化为一个表时所使用的文本内容，一般不需要设置
+		{ "searchable": false, "targets": 0 },
+	],
+		//"bLengthChange": false,//每行显示记录数
+		// language.decimal选项可以配置数字的友好显示，比如1200450，显示为12.004,50
+		"language": {
+        "decimal":",",
+        "thousands":".",
+		//"emptyTable": "No data available in table",//设置无数据时显示的字符串
+		//"loadingRecords": "Please wait - loading..."，//加载数据时显示的字符串
+		//"paginate": {"next": "下一页"},//分页信息的 'next' 按钮显示的信息
+		//"paginate": {"previous": "下一页"},//分页信息的 'previous' 按钮显示的信息
+		
+		"zeroRecords": "没有数据",//无搜索结果时表格显示的信息
+		  //跟数组下标一样，第一列从0开始，这里表格初始化时，第四列默认降序
+        "order": [[ 3, "desc" ]],	
+   }
+	} );
+	
+	
+	 $('.display tbody').on('click', 'tr', function () {
+        var data = table.row( this ).data();
+		console.warn(data);
+        console.log( '你点了 '+data[1]+'\'s 行' );
+    } );
+  })
+</script>
+  
+	</head>
+	<body>
+ 
+</body>
+
+</html>

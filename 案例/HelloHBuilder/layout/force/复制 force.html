@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<body>
+<script src="../../d3.js"></script>
+<script>
+//节点和连接数据
+var data={	//节点
+  "nodes":[
+    {"name":"A"},    {"name":"B"},    {"name":"C"}
+  ],
+  "links":[	//连接
+  	{"source":1,"target":0},
+    {"source":1,"target":0},    {"source":1,"target":2},
+    {"source":2,"target":0},    {"source":2,"target":1},
+    {"source":0,"target":1},    {"source":0,"target":2}
+  ]
+};
+
+
+//SVG的尺寸
+var width = 960,    height = 500;
+
+//定义力布局
+var force = d3.layout.force()
+    .size([width, height])
+    .charge(-500)
+	.chargeDistance(500)
+	.linkDistance(300)//设置最大电荷距离
+	;
+	
+	var s = {},t={};
+data.links.forEach(function(d){
+	console.log(d);
+	 s[d.source + "-" + d.target] ? (s[d.source + "-" + d.target].num++ ): (s[d.source + "-" + d.target] = {num:1});
+//	 t[d.target] ? (t[d.target]++ ): (t[d.target] = 1);
+})
+console.log(s)
+//定义颜色比例尺
+var color=d3.scale.category20c();
+
+//绘制一个svg
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+//加载数据，启动力布局
+force.nodes(data.nodes)
+     .links(data.links)
+     .start();
+     
+//绘制连接线
+var link = svg.selectAll(".link")
+    .data(data.links)
+  .enter().append("path")
+    .attr("stroke", "#ccc");
+
+//绘制节点
+var node = svg.selectAll(".node")
+    .data(data.nodes)
+  .enter().append("circle")
+    .attr("fill", function(d,i){ return color(i);})
+    .attr("r", 5)
+	.attr("stroke","black")
+	.attr("stroke-width",1);
+
+
+link.attr("d",function (d) {
+//	    console.log(d,s[d.source.index]);
+	var key_ = d.source.index + "-" + d.target.index;
+	    if(!s[key_].k){
+	    	var k_ = d.target.dy >
+	    	 Math.abs(Math.abs(d.source.dx) - Math.abs(d.target.dx)) / Math.abs(Math.abs(d.source.dy) - Math.abs(d.target.dy))
+	    }
+//	    if (!d.k) {
+//	        
+//	        Math.abs()
+//	    }
+	})
+	
+	node.attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; });
+
+//按照力布局的节拍移动线和点的位置，直到收敛
+	
+force.on("tick", function() {
+	
+//link.attr("x1", function(d) {console.log(d); return d.source.x; })
+//    .attr("y1", function(d) { return d.source.y; })
+//    .attr("x2", function(d) { return d.target.x; })
+//    .attr("y2", function(d) { return d.target.y; });
+	link.attr("d",function (d,i) {
+//	    console.log(d.source.px);
+	var key_ = d.source.index + "-" + d.target.index;
+	    if(!s[key_].k){
+	    	var abs_x = Math.abs(Math.abs(d.source.px) - Math.abs(d.target.px));
+	    	var abs_y = Math.abs(Math.abs(d.source.py) - Math.abs(d.target.py));
+	    	var o_ = [(d.source.px + d.target.px) / 2 , (d.source.py + d.target.py) / 2];
+	    	var l = Math.sqrt(Math.pow(abs_x,2) + Math.pow(abs_y,2)) 
+	    	var dl = l / s[key_].num;
+//	    	 Math.abs(Math.abs(d.source.px) - Math.abs(d.target.px)) / Math.abs(Math.abs(d.source.py) - Math.abs(d.target.py))
+			i == 1 &&	console.log(l)
+	    }
+//	    if (!d.k) {
+//	        
+//	        Math.abs()
+//	    }
+	})
+
+  node.attr("cx", function(d) { return d.x; })
+      .attr("cy", function(d) { return d.y; });
+});
+
+</script>
